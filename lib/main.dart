@@ -1,253 +1,288 @@
 import 'package:flutter/material.dart';
-import 'package:math_expressions/math_expressions.dart';
 
 void main() {
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: HomePage(),
-    ); // MaterialApp
-  }
-}
+class ProductCard extends StatelessWidget {
+  final String name;
+  final double price;
+  final String imageUrl;
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  var userInput = '';
-  var answer = '';
-
-  // Array of button
-  final List<String> buttons = [
-    'C',
-    '+/-',
-    '%',
-    'DEL',
-    '7',
-    '8',
-    '9',
-    '/',
-    '4',
-    '5',
-    '6',
-    'x',
-    '1',
-    '2',
-    '3',
-    '-',
-    '0',
-    '.',
-    '=',
-    '+',
-  ];
+  const ProductCard({
+    super.key,
+    required this.name,
+    required this.price,
+    required this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Calculator"),
-        backgroundColor: Colors.blueAccent,
-        foregroundColor: Colors.white,
-      ), //AppBar
-      backgroundColor: Colors.white38,
-      body: Column(
-        children: <Widget>[
-          Expanded(
-            child: Container(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: <Widget>[
-                  Container(
-                    padding: EdgeInsets.all(20),
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      userInput,
-                      style: TextStyle(fontSize: 18, color: Colors.white),
-                    ),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(15),
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      answer,
-                      style: TextStyle(
-                        fontSize: 30,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      elevation: 5,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Зураг
+          ClipRRect(
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+            child: Image.network(
+              imageUrl,
+              width: double.infinity,
+              height: 200,
+              fit: BoxFit.cover,
             ),
           ),
-          Expanded(
-            flex: 3,
-            child: Container(
-              child: GridView.builder(
-                itemCount: buttons.length,
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 4,
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
-                itemBuilder: (BuildContext context, int index) {
-                  // Clear Button
-                  if (index == 0) {
-                    return MyButton(
-                      buttontapped: () {
-                        setState(() {
-                          userInput = '';
-                          answer = '0';
-                        });
-                      },
-                      buttonText: buttons[index],
-                      color: Colors.blue[50],
-                      textColor: Colors.black,
-                    );
-                  }
-                  // +/- button
-                  else if (index == 1) {
-                    return MyButton(
-                      buttonText: buttons[index],
-                      color: Colors.blue[50],
-                      textColor: Colors.black,
-                    );
-                  }
-                  // % Button
-                  else if (index == 2) {
-                    return MyButton(
-                      buttontapped: () {
-                        setState(() {
-                          userInput += buttons[index];
-                        });
-                      },
-                      buttonText: buttons[index],
-                      color: Colors.blue[50],
-                      textColor: Colors.black,
-                    );
-                  }
-                  // Delete Button
-                  else if (index == 3) {
-                    return MyButton(
-                      buttontapped: () {
-                        setState(() {
-                          userInput = userInput.substring(
-                            0,
-                            userInput.length - 1,
-                          );
-                        });
-                      },
-                      buttonText: buttons[index],
-                      color: Colors.blue[50],
-                      textColor: Colors.black,
-                    );
-                  }
-                  // Equal_to Button
-                  else if (index == 18) {
-                    return MyButton(
-                      buttontapped: () {
-                        setState(() {
-                          equalPressed();
-                        });
-                      },
-                      buttonText: buttons[index],
-                      color: Colors.orange[700],
-                      textColor: Colors.white,
-                    );
-                  }
-                  //  other buttons
-                  else {
-                    return MyButton(
-                      buttontapped: () {
-                        setState(() {
-                          userInput += buttons[index];
-                        });
-                      },
-                      buttonText: buttons[index],
-                      color:
-                          isOperator(buttons[index])
-                              ? Colors.blueAccent
-                              : Colors.white,
-                      textColor:
-                          isOperator(buttons[index])
-                              ? Colors.white
-                              : Colors.black,
-                    );
-                  }
-                },
-              ), // GridView.builder
+                const SizedBox(height: 6),
+                Text(
+                  "\$${price.toStringAsFixed(2)}",
+                  style: const TextStyle(fontSize: 16, color: Colors.green),
+                ),
+                const SizedBox(height: 8),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      // Add to cart logic
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text("Add to Cart"),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
       ),
     );
   }
-
-  bool isOperator(String x) {
-    if (x == '/' || x == 'x' || x == '-' || x == '+' || x == '=') {
-      return true;
-    }
-    return false;
-  }
-
-  // function to calculate the input operation
-  void equalPressed() {
-    String finaluserinput = userInput;
-    finaluserinput = userInput.replaceAll('x', '*');
-    print(finaluserinput);
-    // Parser p = Parser();
-    // Expression exp = p.parse(finaluserinput);
-    // ContextModel cm = ContextModel();
-    // double eval = exp.evaluate(EvaluationType.REAL, cm);
-    // answer = eval.toString();
-  }
 }
 
-// creating Stateless Widget for buttons
-class MyButton extends StatelessWidget {
-  // declaring variables
-  final color;
-  final textColor;
-  final String buttonText;
-  final buttontapped;
-
-  //Constructor
-  MyButton({
-    this.color,
-    this.textColor,
-    required this.buttonText,
-    this.buttontapped,
-  });
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: buttontapped,
-      child: Padding(
-        padding: const EdgeInsets.all(0.2),
-        child: ClipRRect(
-          // borderRadius: BorderRadius.circular(25),
-          child: Container(
-            color: color,
-            child: Center(
-              child: Text(
-                buttonText,
-                style: TextStyle(
-                  color: textColor,
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          actions: [
+            Container(
+              width: 300,
+              margin: const EdgeInsets.symmetric(vertical: 8),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: "Хайх...",
+                  fillColor: Colors.white,
+                  filled: true,
+                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
                 ),
               ),
             ),
+            IconButton(
+              icon: Icon(Icons.search),
+              onPressed: () {
+                // хайлт хийх логик
+              },
+            ),
+          ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            ProductCard(
+              name: "Nike Air Max",
+              price: 129.99,
+              imageUrl:
+                  "https://images.unsplash.com/photo-1520209759809-a9bcb6cb3241?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            ),
+            ProductCard(
+              name: "Adidas T-Shirt",
+              price: 39.99,
+              imageUrl:
+                  "https://images.unsplash.com/photo-1520209759809-a9bcb6cb3241?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            ),
+            ProductCard(
+              name: "Apple Watch",
+              price: 399.99,
+              imageUrl:
+                  "https://images.unsplash.com/photo-1520209759809-a9bcb6cb3241?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+            ),
+          ],
+        ),
+
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed, // 4+ tab бол заавал fixed
+          backgroundColor: Colors.black,
+          selectedItemColor: Colors.orange,
+          unselectedItemColor: Colors.grey,
+          selectedFontSize: 14,
+          unselectedFontSize: 12,
+          iconSize: 28,
+          currentIndex: 0,
+
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: 'Cart',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Wishlist',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+          ],
+        ),
+
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Colors.blue),
+                child: Text(
+                  'Миний цэс',
+                  style: TextStyle(color: Colors.white, fontSize: 24),
+                ),
+              ),
+              ListTile(
+                leading: Icon(Icons.home),
+                title: Text('Нүүр'),
+                onTap: () {
+                  // navigate эсвэл setState
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.settings),
+                title: Text('Тохиргоо'),
+                onTap: () {},
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         appBar: AppBar(
+//           backgroundColor: Colors.green,
+//           title: const Text("flutter is fun"),
+//         ),
+//         body: Row(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           crossAxisAlignment: CrossAxisAlignment.end,
+//           children: const [
+//             Expanded(flex: 4, child: Icon(Icons.backpack)),
+//             Icon(Icons.leaderboard),
+//             Icon(Icons.login),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+// }
+// // app bars test
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       home: Scaffold(
+//         appBar: AppBar(
+//           backgroundColor: Colors.green,
+//           title: const Text("flutter is fun"),
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       title: 'Flutter Анхан шат',
+//       theme: ThemeData(primarySwatch: Colors.blue),
+//       home: MyHomePage(),
+//       debugShowCheckedModeBanner: false,
+//     );
+//   }
+// }
+
+// class MyHomePage extends StatefulWidget {
+//   @override
+//   _MyHomePageState createState() => _MyHomePageState();
+// }
+
+// class _MyHomePageState extends State<MyHomePage> {
+//   int count = 0;
+
+//   void _increaseCounter() {
+//     setState(() {
+//       count++;
+//     });
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         backgroundColor: Color.fromARGB(255, 255, 0, 0),
+//         title: Text('Тоолуурын апп'),
+//       ),
+
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             Text('Та дараах товчийг дарав:', style: TextStyle(fontSize: 18)),
+//             SizedBox(height: 10),
+//             Text(
+//               '$count удаа',
+//               style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+//             ),
+//           ],
+//         ),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: _increaseCounter,
+//         tooltip: 'Нэмэх',
+//         child: Icon(Icons.add),
+//       ),
+//     );
+//   }
+// }
