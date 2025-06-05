@@ -82,35 +82,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String myTitle = "Flutter App";
+    Color myColor = Colors.green;
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
+          title: Text(myTitle),
+          backgroundColor: myColor,
+          centerTitle: true,
           actions: [
-            Container(
-              width: 300,
-              margin: const EdgeInsets.symmetric(vertical: 8),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: "Хайх...",
-                  fillColor: Colors.white,
-                  filled: true,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide.none,
-                  ),
-                ),
-              ),
-            ),
             IconButton(
               icon: Icon(Icons.search),
               onPressed: () {
-                // хайлт хийх логик
+                print("Хайх дарлаа");
               },
             ),
           ],
         ),
+
         body: ListView(
           padding: const EdgeInsets.all(16),
           children: [
